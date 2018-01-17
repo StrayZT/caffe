@@ -1,12 +1,13 @@
-cur_dir=$(cd $( dirname ${BASH_SOURCE[0]} ) && pwd )
-root_dir=$cur_dir/../..
-
+#cur_dir=$(cd $( dirname ${BASH_SOURCE[0]} ) && pwd )
+#root_dir=$cur_dir
+root_dir=/home/zt/Music/caffe_SSD
 cd $root_dir
+export PYTHONPATH="$root_dir/python"
 
 redo=1
-data_root_dir="$HOME/data/VOCdevkit"
-dataset_name="VOC0712"
-mapfile="$root_dir/data/$dataset_name/labelmap_voc.prototxt"
+data_root_dir="$root_dir/data/VOC2007"
+dataset_name="VOC2007"
+mapfile="$root_dir/data/$dataset_name/labelmap_person.prototxt"
 anno_type="detection"
 db="lmdb"
 min_dim=0
