@@ -5,9 +5,9 @@ cd $root_dir
 export PYTHONPATH="$root_dir/python"
 
 redo=1
-data_root_dir="$root_dir/data/VOC2007"
+data_root_dir="/home/zt/Music/caffe_SSD/data"
 dataset_name="VOC2007"
-mapfile="$root_dir/data/$dataset_name/labelmap_person.prototxt"
+mapfile="$root_dir/data/$dataset_name/labelmap.prototxt"
 anno_type="detection"
 db="lmdb"
 min_dim=0

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #root_dir=$HOME/data/VOCdevkit/
-root_dir=/home/zt/Music/caffe_SSD/data/VOC2007
+root_dir=/home/zt/Music/caffe_SSD/data
 sub_dir=ImageSets/Main
 bash_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 for dataset in trainval test
@@ -11,7 +11,7 @@ do
   then
     rm -f $dst_file
   fi
-  for name in VOC2007 VOC2012
+  for name in VOC2007
   do
     if [[ $dataset == "test" && $name == "VOC2012" ]]
     then
@@ -39,7 +39,8 @@ do
   # Generate image name and size infomation.
   if [ $dataset == "test" ]
   then
-    $bash_dir/../../build/tools/get_image_size $root_dir $dst_file $bash_dir/$dataset"_name_size.txt"
+    cd ${root_dir}
+    ../build/tools/get_image_size $root_dir $dst_file $bash_dir/$dataset"_name_size.txt"
   fi
 
   # Shuffle trainval file.
