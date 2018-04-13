@@ -1176,6 +1176,8 @@ message ImageDataParameter {
   // data.
   optional bool mirror = 6 [default = false];
   optional string root_folder = 12 [default = ""];
+
+  optional uint32 label_dim = 20 [default = 1]; // to fit multi-task-labels
 }
 
 message InfogainLossParameter {

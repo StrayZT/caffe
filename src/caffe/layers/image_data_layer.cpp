@@ -36,7 +36,7 @@ void ImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
   // Read the file with filenames and labels
   const string& source = this->layer_param_.image_data_param().source();
   LOG(INFO) << "Opening file " << source;
-  std::ifstream infile(source.c_str());
+  /*std::ifstream infile(source.c_str());
   string line;
   size_t pos;
   int label;
@@ -44,6 +44,18 @@ void ImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
     pos = line.find_last_of(' ');
     label = atoi(line.substr(pos + 1).c_str());
     lines_.push_back(std::make_pair(line.substr(0, pos), label));
+  }*/
+  std::ifstream infile(source.c_str());
+  string filename;
+  // get labels' category
+  int label_dim = this->layer_param_.image_data_param().label_dim();
+  // like this: img0.jpg 3 2 7 1 ...
+  while (infile >> filename) {
+    int* labels = new int[label_dim];
+    for(int i = 0;i < label_dim;++i){
+        infile >> labels[i];
+    }
+    lines_.push_back(std::make_pair(filename, labels));
   }
 
   CHECK(!lines_.empty()) << "File is empty";
@@ -86,8 +98,15 @@ void ImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
       << top[0]->channels() << "," << top[0]->height() << ","
       << top[0]->width();
   // label
-  vector<int> label_shape(1, batch_size);
+  /*vector<int> label_shape(1, batch_size);
   top[1]->Reshape(label_shape);
+  for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
+    this->prefetch_[i].label_.Reshape(label_shape);
+  }*/
+  vector<int> label_shape(2);
+  label_shape[0] = batch_size;
+  label_shape[1] = label_dim;
+  top[1]->Reshape(label_shape); // label output: shape batch_size*label_dim
   for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
     this->prefetch_[i].label_.Reshape(label_shape);
   }
@@ -103,6 +122,7 @@ void ImageDataLayer<Dtype>::ShuffleImages() {
 // This function is called on prefetch thread
 template <typename Dtype>
 void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
+  int label_dim = this->layer_param_.image_data_param().label_dim(); // added in 20180413
   CPUTimer batch_timer;
   batch_timer.Start();
   double read_time = 0;
@@ -149,7 +169,11 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
     trans_time += timer.MicroSeconds();
 
-    prefetch_label[item_id] = lines_[lines_id_].second;
+    //prefetch_label[item_id] = lines_[lines_id_].second;
+    for(int i = 0;i < label_dim;++i) {
+      prefetch_label[item_id * label_dim + i] = lines_[lines_id_].second[i];
+    }
+
     // go to the next iter
     lines_id_++;
     if (lines_id_ >= lines_size) {
