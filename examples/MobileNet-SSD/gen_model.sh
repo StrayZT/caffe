@@ -30,10 +30,10 @@ sed -i "s/cls6x/${cls_num6}/g" $testfile
 sed -i "s/cls3x/${cls_num3}/g" $testfile
 sed -i "s/cls1x/${cls_num}/g" $testfile
 
-#cp template/MobileNetSSD_deploy_bn_template.prototxt $deploybnfile
-#sed -i "s/cls6x/${cls_num6}/g" $deploybnfile
-#sed -i "s/cls3x/${cls_num3}/g" $deploybnfile
-#sed -i "s/cls1x/${cls_num}/g" $deploybnfile
+cp template/MobileNetSSD_deploy_bn_template.prototxt $deploybnfile
+sed -i "s/cls6x/${cls_num6}/g" $deploybnfile
+sed -i "s/cls3x/${cls_num3}/g" $deploybnfile
+sed -i "s/cls1x/${cls_num}/g" $deploybnfile
 
 cp template/MobileNetSSD_deploy_template.prototxt $deployfile
 sed -i "s/cls6x/${cls_num6}/g" $deployfile
